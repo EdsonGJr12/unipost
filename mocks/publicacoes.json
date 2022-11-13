@@ -1,0 +1,52 @@
+[
+  {
+    "idUsuario": 1,
+    "texto": "Publicação usuário 1",
+    "idUsuariosGostei": []
+  },
+  {
+    "idUsuario": 2,
+    "texto": "Publicação usuário 2",
+    "idUsuariosGostei": []
+  },
+  {
+    "idUsuario": 3,
+    "texto": "Publicação usuário 3",
+    "idUsuariosGostei": []
+  },
+  {
+    "idUsuario": 4,
+    "texto": "Publicação usuário 4",
+    "idUsuariosGostei": []
+  },
+  {
+    "idUsuario": 4,
+    "texto": "Outra publicação do usuário 4",
+    "idUsuariosGostei": []
+  },
+  {
+    "idUsuario": 4,
+    "texto": "NOvamente outra publicação do usuário 4",
+    "idUsuariosGostei": []
+  },
+  {
+    "idUsuario": 4,
+    "texto": "NOvamente outra publicação do usuário 4",
+    "idUsuariosGostei": []
+  },
+  {
+    "idUsuario": "2",
+    "texto": "teste",
+    "idUsuariosGostei": []
+  },
+  {
+    "idUsuario": 1,
+    "texto": "usuário 1 postando",
+    "idUsuariosGostei": []
+  },
+  {
+    "idUsuario": 1,
+    "texto": "usuário 1 postando",
+    "idUsuariosGostei": []
+  }
+]
