@@ -48,5 +48,15 @@
     "idUsuario": 1,
     "texto": "usuário 1 postando",
     "idUsuariosGostei": []
+  },
+  {
+    "idUsuario": 3,
+    "texto": "agora vai",
+    "idUsuariosGostei": []
+  },
+  {
+    "idUsuario": 3,
+    "texto": "agora vai",
+    "idUsuariosGostei": []
   }
 ]

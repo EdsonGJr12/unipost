@@ -1,30 +1,42 @@
 [
-    {
-        "id": 1,
-        "nome": "Edson",
-        "login": "edsongjr",
-        "senha": "123456",
-        "inscritos": [2]
-    },
-    {
-        "id": 2,
-        "nome": "Fulano",
-        "login": "fulano",
-        "senha": "123456",
-        "inscritos": [1]
-    },
-    {
-        "id": 3,
-        "nome": "Cicrano",
-        "login": "cicrano",
-        "senha": "123456",
-        "inscritos": [2, 3, 4]
-    },
-    {
-        "id": 4,
-        "nome": "Beltrano",
-        "login": "beltrano",
-        "senha": "123456",
-        "inscritos": []
-    }
+  {
+    "id": 1,
+    "nome": "Edson",
+    "login": "edsongjr",
+    "senha": "123456",
+    "inscritos": [
+      2
+    ],
+    "logado": true
+  },
+  {
+    "id": 2,
+    "nome": "Fulano",
+    "login": "fulano",
+    "senha": "123456",
+    "inscritos": [
+      1
+    ],
+    "logado": false
+  },
+  {
+    "id": 3,
+    "nome": "Cicrano",
+    "login": "cicrano",
+    "senha": "123456",
+    "inscritos": [
+      2,
+      3,
+      4
+    ],
+    "logado": false
+  },
+  {
+    "id": 4,
+    "nome": "Beltrano",
+    "login": "beltrano",
+    "senha": "123456",
+    "inscritos": [],
+    "logado": false
+  }
 ]

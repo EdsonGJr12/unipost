@@ -1,9 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 
-const { randomUUID } = require("crypto");
-const { autenticar } = require('./service');
-
+const { autenticar, salvarNovaPublicacao } = require('./service');
 
 const server = express();
 var urlencodedParser = bodyParser.urlencoded({ extended: false })
@@ -16,20 +14,52 @@ const fs = require('fs');
 
 server.get("/login", (request, response) => {
 
-    return response.send("Olá mundo")
+    return response.send(`
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <meta http-equiv="X-UA-Compatible" content="IE=edge">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Document</title>
+        </head>
+        <body>
+            <form action="/login" method="post">
+                <h1>Login</h1>
+                <input type="text" name="login">
+                <input type="password" name="senha">
+                <button type="submit">Logar</button>
+            </form>
+        </body>
+        </html>
+    `);
 });
 
-server.post("/login", (request, response) => {
+server.post("/login", urlencodedParser, (request, response) => {
+    const {
+        login,
+        senha
+    } = request.body;
 
-    return response.send("Olá mundo")
+    const autenticado = autenticar(login, senha);
+    if (autenticado) {
+        return response.redirect(`/publicacoes?idUsuario=${autenticado.id}`)
+    }
+
+    return response.send("Usuário ou senha inválidos")
 });
 
 server.get("/publicacoes", (request, response) => {
     const usuarios = require("./mocks/usuarios.json");
     const publicacoes = require("./mocks/publicacoes.json");
 
-    const { idUsuarioLogado } = request.query;
-    const usuarioLogado = usuarios.find(usuario => usuario.id == idUsuarioLogado);
+    const { idUsuario } = request.query;
+    const usuarioLogado = usuarios.find(usuario => usuario.id == idUsuario);
+
+    if (!usuarioLogado.logado) {
+        return response.redirect("/login")
+    }
+
     const usuariosInscritos = usuarioLogado.inscritos;
 
     let timeline = [];
@@ -53,7 +83,7 @@ server.get("/publicacoes", (request, response) => {
 
     const htmlNovaPublicacao = ` <form method="post" action="/publicacoes">
                 <textarea name="texto"></textarea>
-                <input name="idUsuario" type="hidden" value="${idUsuarioLogado}"/>
+                <input name="idUsuario" type="hidden" value="${idUsuario}"/>
                 <button>Publicar</button>
             </form>
 
@@ -67,7 +97,6 @@ server.get("/publicacoes", (request, response) => {
 });
 
 server.post("/publicacoes", urlencodedParser, (request, response) => {
-    const json = require("./mocks/publicacoes.json");
 
     const {
         idUsuario,
@@ -80,9 +109,7 @@ server.post("/publicacoes", urlencodedParser, (request, response) => {
         idUsuariosGostei: []
     }
 
-    json.push(novaPublicacao);
-
-    fs.writeFileSync("./mocks/publicacoes.json", JSON.stringify(json, null, 2));
+    salvarNovaPublicacao(novaPublicacao);
 
     return response.end(`
         <!DOCTYPE html>
