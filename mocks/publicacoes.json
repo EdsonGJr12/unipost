@@ -1,62 +1,93 @@
 [
   {
+    "id": 1,
     "idUsuario": 1,
     "texto": "Publicação usuário 1",
     "idUsuariosGostei": []
   },
   {
+    "id": 2,
     "idUsuario": 2,
     "texto": "Publicação usuário 2",
-    "idUsuariosGostei": []
+    "idUsuariosGostei": [
+      1
+    ]
   },
   {
+    "id": 3,
     "idUsuario": 3,
     "texto": "Publicação usuário 3",
     "idUsuariosGostei": []
   },
   {
+    "id": 4,
     "idUsuario": 4,
     "texto": "Publicação usuário 4",
     "idUsuariosGostei": []
   },
   {
+    "id": 5,
     "idUsuario": 4,
     "texto": "Outra publicação do usuário 4",
     "idUsuariosGostei": []
   },
   {
+    "id": 6,
     "idUsuario": 4,
     "texto": "NOvamente outra publicação do usuário 4",
     "idUsuariosGostei": []
   },
   {
+    "id": 7,
     "idUsuario": 4,
     "texto": "NOvamente outra publicação do usuário 4",
     "idUsuariosGostei": []
   },
   {
+    "id": 8,
     "idUsuario": "2",
     "texto": "teste",
-    "idUsuariosGostei": []
+    "idUsuariosGostei": [
+      1,
+      3
+    ]
   },
   {
+    "id": 9,
     "idUsuario": 1,
     "texto": "usuário 1 postando",
     "idUsuariosGostei": []
   },
   {
+    "id": 10,
     "idUsuario": 1,
     "texto": "usuário 1 postando",
     "idUsuariosGostei": []
   },
   {
+    "id": 11,
     "idUsuario": 3,
     "texto": "agora vai",
     "idUsuariosGostei": []
   },
   {
+    "id": 12,
     "idUsuario": 3,
     "texto": "agora vai",
     "idUsuariosGostei": []
+  },
+  {
+    "id": 13,
+    "idUsuario": 1,
+    "texto": "opa",
+    "idUsuariosGostei": []
+  },
+  {
+    "id": 14,
+    "idUsuario": 2,
+    "texto": "teste",
+    "idUsuariosGostei": [
+      1
+    ]
   }
 ]

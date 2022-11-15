@@ -1,7 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 
-const { autenticar, salvarNovaPublicacao } = require('./service');
+const { autenticar, salvarNovaPublicacao, gerarIdPublicacao } = require('./service');
 
 const server = express();
 var urlencodedParser = bodyParser.urlencoded({ extended: false })
@@ -43,10 +43,34 @@ server.post("/login", urlencodedParser, (request, response) => {
 
     const autenticado = autenticar(login, senha);
     if (autenticado) {
-        return response.redirect(`/publicacoes?idUsuario=${autenticado.id}`)
+        return response.redirect(`/publicacoes?idUsuario=${autenticado.id}`);
     }
 
     return response.send("Usuário ou senha inválidos")
+});
+
+server.post("/logout", urlencodedParser, (request, response) => {
+    const usuarios = require("./mocks/usuarios.json");
+
+    const {
+        idUsuario,
+    } = request.body;
+
+
+    let usuarioAtualizado = usuarios.find(usuario => usuario.id == idUsuario)
+    usuarioAtualizado.logado = false;
+
+    const usuariosAtualizados = usuarios.map(usuario => {
+        if (usuario.id == idUsuario) {
+            return usuarioAtualizado
+        } else {
+            return usuario;
+        }
+    })
+
+    fs.writeFileSync("./mocks/usuarios.json", JSON.stringify(usuariosAtualizados, null, 2));
+
+    return response.redirect("/login");
 });
 
 server.get("/publicacoes", (request, response) => {
@@ -56,9 +80,26 @@ server.get("/publicacoes", (request, response) => {
     const { idUsuario } = request.query;
     const usuarioLogado = usuarios.find(usuario => usuario.id == idUsuario);
 
-    if (!usuarioLogado.logado) {
+    if (!usuarioLogado || !usuarioLogado.logado) {
         return response.redirect("/login")
     }
+
+    const htmlLogout = `
+        <form method="post" action="/logout">
+            <input name="idUsuario" type="hidden" value="${idUsuario}"/>
+            <button>Logout</button>
+        </form>
+    `;
+
+    const htmlNovaPublicacao = htmlLogout + ` <form method="post" action="/publicacoes">
+                                    <textarea name="texto"></textarea>
+                                    <input name="idUsuario" type="hidden" value="${idUsuario}"/>
+                                    <button>Publicar</button>
+                                </form>
+
+                                <br>
+                                <br>
+                                <br>`
 
     const usuariosInscritos = usuarioLogado.inscritos;
 
@@ -76,20 +117,25 @@ server.get("/publicacoes", (request, response) => {
             <div style="border-bottom: 1px solid black">
                 <h3>${detalhesUsuario.nome}</h3>
                 <p>${publicacao.texto}</p>
-                <button>Gostei</button>
+                ${publicacao.idUsuariosGostei.includes(usuarioLogado.id) ? (
+                `
+                        <form method="post" action="/publicacoes/${publicacao.id}/gostei">
+                            <button type="submit">Remover gostei</button>
+                            <input name="idUsuario" type="hidden" value="${idUsuario}"/>
+                        </form>
+                    `
+            ) : (
+                `
+                            <form method="post" action="/publicacoes/${publicacao.id}/gostei">
+                                <button type="submit">Gostei</button>
+                                <input name="idUsuario" type="hidden" value="${idUsuario}"/>
+                            </form>
+                    `
+            )}
+
             </div>
         `;
     }).join("");
-
-    const htmlNovaPublicacao = ` <form method="post" action="/publicacoes">
-                <textarea name="texto"></textarea>
-                <input name="idUsuario" type="hidden" value="${idUsuario}"/>
-                <button>Publicar</button>
-            </form>
-
-            <br>
-            <br>
-            <br>`
 
     html = htmlNovaPublicacao + htmlPublicacoes;
 
@@ -103,7 +149,10 @@ server.post("/publicacoes", urlencodedParser, (request, response) => {
         texto
     } = request.body;
 
+    const idPublicacao = gerarIdPublicacao();
+
     const novaPublicacao = {
+        id: idPublicacao,
         idUsuario: Number(idUsuario),
         texto,
         idUsuariosGostei: []
@@ -127,14 +176,37 @@ server.post("/publicacoes", urlencodedParser, (request, response) => {
     `);
 });
 
-server.put("/publicacoes/:id/gostei", (request, response) => {
+server.post("/publicacoes/:id/gostei", urlencodedParser, (request, response) => {
     const { id } = request.params;
-    return response.send("Olá mundo")
-});
+    let {
+        idUsuario
+    } = request.body;
 
-server.put("/publicacoes/:id/comentario", (request, response) => {
-    const { id } = request.params;
-    return response.send("Olá mundo")
+    idUsuario = Number(idUsuario);
+
+    const publicacoes = require("./mocks/publicacoes.json");
+
+    let publicacao = publicacoes.find(publicacao => publicacao.id == id);
+
+    if (publicacao.idUsuariosGostei.includes(idUsuario)) {
+        let publicacao = publicacoes.find(publicacao => publicacao.id == id);
+        publicacao.idUsuariosGostei = publicacao.idUsuariosGostei
+            .filter(idUsuarioGostei => idUsuarioGostei != idUsuario);
+    } else {
+        publicacao.idUsuariosGostei.push(Number(idUsuario));
+    }
+
+    const publicacoesAtualizadas = publicacoes.map(pub => {
+        if (pub.id == id) {
+            return publicacao;
+        } else {
+            return pub;
+        }
+    });
+
+    fs.writeFileSync("./mocks/publicacoes.json", JSON.stringify(publicacoesAtualizadas, null, 2));
+
+    return response.redirect(`/publicacoes?idUsuario=${idUsuario}`);
 });
 
 

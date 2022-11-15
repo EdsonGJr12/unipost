@@ -38,7 +38,14 @@ function salvarNovaPublicacao(novaPublicacao) {
     fs.writeFileSync(filePath, JSON.stringify(json, null, 2));
 }
 
+function gerarIdPublicacao() {
+    const publicacoes = require("../mocks/publicacoes.json");
+    let ultimoIdGerado = publicacoes[publicacoes.length - 1].id;
+    return ultimoIdGerado += 1;
+}
+
 module.exports = {
     autenticar,
-    salvarNovaPublicacao
+    salvarNovaPublicacao,
+    gerarIdPublicacao
 }
