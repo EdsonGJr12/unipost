@@ -9,7 +9,7 @@ function autenticar(login, senha) {
     if (!usuario) {
         return false;
     } else {
-        if (usuario.senha !== senha) {
+        if (usuario.senha != senha) {
             return false;
         }
     }

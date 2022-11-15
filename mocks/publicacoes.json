@@ -9,9 +9,7 @@
     "id": 2,
     "idUsuario": 2,
     "texto": "Publicação usuário 2",
-    "idUsuariosGostei": [
-      1
-    ]
+    "idUsuariosGostei": []
   },
   {
     "id": 3,
@@ -48,7 +46,6 @@
     "idUsuario": "2",
     "texto": "teste",
     "idUsuariosGostei": [
-      1,
       3
     ]
   },

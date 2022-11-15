@@ -7,7 +7,7 @@
     "inscritos": [
       2
     ],
-    "logado": false
+    "logado": true
   },
   {
     "id": 2,
@@ -17,7 +17,7 @@
     "inscritos": [
       1
     ],
-    "logado": true
+    "logado": false
   },
   {
     "id": 3,
