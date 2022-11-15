@@ -8,7 +8,7 @@ var urlencodedParser = bodyParser.urlencoded({ extended: false })
 
 server.use(express.static('public'));
 
-server.listen(8080, () => "Servidor iniciado com sucesso");
+server.listen(process.env.PORT || 8080, () => "Servidor iniciado com sucesso");
 
 const fs = require('fs');
 
