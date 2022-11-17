@@ -1,7 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 
-const { autenticar, salvarNovaPublicacao, gerarIdPublicacao } = require('./service');
+const { autenticar, salvarNovaPublicacao, gerarIdPublicacao, salvarPublicacao, desalvarPublicacao} = require('./service');
 
 const server = express();
 var urlencodedParser = bodyParser.urlencoded({ extended: false })
@@ -128,6 +128,7 @@ server.get("/publicacoes", (request, response) => {
                 `
                             <form method="post" action="/publicacoes/${publicacao.id}/gostei">
                                 <button type="submit">Gostei</button>
+                                <button id="save">Salvar</button>
                                 <input name="idUsuario" type="hidden" value="${idUsuario}"/>
                             </form>
                     `
@@ -155,7 +156,8 @@ server.post("/publicacoes", urlencodedParser, (request, response) => {
         id: idPublicacao,
         idUsuario: Number(idUsuario),
         texto,
-        idUsuariosGostei: []
+        idUsuariosGostei: [],
+        publicacaoSalva
     }
 
     salvarNovaPublicacao(novaPublicacao);
@@ -209,7 +211,48 @@ server.post("/publicacoes/:id/gostei", urlencodedParser, (request, response) => 
     return response.redirect(`/publicacoes?idUsuario=${idUsuario}`);
 });
 
+server.post('/salvarPublicacao', (req, res) =>{
+    const id = req.params
+    let idUsuario = req.body
+    idUsuario = Number(idUsuario)
 
+    const publicacoes = require("./mocks/publicacoes.json")
+
+    let publicacao = publicacoes.find(publicacao => publicacao.id == id)
+    const pub = {
+        id: publicacao.id,
+        idUsuario: Number(publicacao.idUsuario),
+        texto: publicacao.texto,
+        idUsuariosGostei: [],
+        idUsuariosSalvos: []
+    }
+
+    getElementById("save").onclick = function save(){
+        pub.publicacaoSalva = true
+        salvarPublicacao(pub)
+        getElementById("save").innerHTML = "Desfazer"
+    }
+    return res.redirect(`/publicacoes?idUsuario=${idUsuario}`)
+
+})
+
+server.post('/desalvarPublicacao', (req, res) => {
+    const id = req.params
+    let idUsuario = req.body
+
+    const publicacoesSalvas = require("./mocks/publicacoesSalvas.json")
+    let publicacao = publicacoesSalvas.find(publicacao => publicacao.id == id)
+    
+    if (publicacao.publicacaoSalva == true){
+        getElementById("save").onclick = function desalvar(){
+            publicacao.publicacaoSalva == false
+            desalvarPublicacao(publicacao)
+            
+        }
+    }
+
+    return res.redirect(`/publicacoes?idUsuario=${idUsuario}`)
+})
 
 
 
