@@ -44,8 +44,23 @@ function gerarIdPublicacao() {
     return ultimoIdGerado += 1;
 }
 
+function salvarPublicacao(publicacao) {
+    const json = require("../mocks/publicacoesSalvas.json")
+    json.push(publicacao)
+    const filePath = path.resolve(__dirname, "../mocks/publicacoesSalvas.json")
+    fs.writeFileSync(filePath, JSON.stringify(json, null, 2));
+}
+
+function desalvarPublicacao(publicacao){
+    const json = require("../mocks/publicacoesSalvas.json")
+    json.splice(publicacao.id, 1)
+}
+
+
 module.exports = {
     autenticar,
     salvarNovaPublicacao,
-    gerarIdPublicacao
+    gerarIdPublicacao,
+    salvarPublicacao,
+    desalvarPublicacao
 }
