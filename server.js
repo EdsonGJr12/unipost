@@ -218,14 +218,7 @@ server.post('/salvarPublicacao', (req, res) =>{
 
     const publicacoes = require("./mocks/publicacoes.json")
 
-    let publicacao = publicacoes.find(publicacao => publicacao.id == id)
-    const pub = {
-        id: publicacao.id,
-        idUsuario: Number(publicacao.idUsuario),
-        texto: publicacao.texto,
-        idUsuariosGostei: [],
-        idUsuariosSalvos: []
-    }
+    let pub = publicacoes.find(publicacao => publicacao.id == id)
 
     getElementById("save").onclick = function save(){
         pub.publicacaoSalva = true
