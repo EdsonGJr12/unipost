@@ -89,6 +89,8 @@ server.get("/publicacoes", (request, response) => {
             <input name="idUsuario" type="hidden" value="${idUsuario}"/>
             <button>Logout</button>
         </form>
+        
+        <h2>Timeline</h2>
     `;
 
     const htmlNovaPublicacao = htmlLogout + ` <form method="post" action="/publicacoes">
@@ -112,8 +114,7 @@ server.get("/publicacoes", (request, response) => {
     const htmlPublicacoes = timeline.map(publicacao => {
         const detalhesUsuario = usuarios.find(usuario => usuario.id == publicacao.idUsuario);
         return `
-            
-            <h2>Timeline</h2>
+   
             <div style="border-bottom: 1px solid black">
                 <h3>${detalhesUsuario.nome}</h3>
                 <p>${publicacao.texto}</p>
