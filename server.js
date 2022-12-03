@@ -1,7 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 
-const { autenticar, salvarNovaPublicacao, gerarIdPublicacao, salvarPublicacao, desalvarPublicacao} = require('./service');
+const { autenticar, salvarNovaPublicacao, gerarIdPublicacao, salvarPublicacao, desalvarPublicacao } = require('./service');
 
 const server = express();
 var urlencodedParser = bodyParser.urlencoded({ extended: false })
@@ -129,13 +129,28 @@ server.get("/publicacoes", (request, response) => {
                 `
                             <form method="post" action="/publicacoes/${publicacao.id}/gostei">
                                 <button type="submit">Gostei</button>
-                                <button id="save">Salvar</button>
                                 <input name="idUsuario" type="hidden" value="${idUsuario}"/>
                             </form>
                     `
             )}
 
-            </div>
+            ${usuarioLogado.idPublicacoesSalvas.includes(publicacao.id) ? (
+                `
+                <form method="post" action="/publicacoes/${publicacao.id}/salvar">
+                            <button type="submit">Desfazer</button>
+                            <input name="idUsuario" type="hidden" value="${idUsuario}"/>
+                        </form>
+                        `
+            ) : (
+                `
+                <form method="post" action="/publicacoes/${publicacao.id}/salvar">
+                                <button type="submit">Salvar</button>
+                                <input name="idUsuario" type="hidden" value="${idUsuario}"/>
+                            </form>
+                `
+            )}
+
+            </div >
         `;
     }).join("");
 
@@ -157,26 +172,25 @@ server.post("/publicacoes", urlencodedParser, (request, response) => {
         id: idPublicacao,
         idUsuario: Number(idUsuario),
         texto,
-        idUsuariosGostei: [],
-        publicacaoSalva
+        idUsuariosGostei: []
     }
 
     salvarNovaPublicacao(novaPublicacao);
 
     return response.end(`
-        <!DOCTYPE html>
-        <html lang="en">
-        <head>
-            <meta charset="UTF-8">
-            <meta http-equiv="X-UA-Compatible" content="IE=edge">
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>Document</title>
-        </head>
-        <body>
-            <p>Publicação realizada com sucesso</p>
-        </body>
-        </html>
-    `);
+        < !DOCTYPE html >
+            <html lang="en">
+                <head>
+                    <meta charset="UTF-8">
+                        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+                            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                                <title>Document</title>
+                            </head>
+                            <body>
+                                <p>Publicação realizada com sucesso</p>
+                            </body>
+                        </html>
+                        `);
 });
 
 server.post("/publicacoes/:id/gostei", urlencodedParser, (request, response) => {
@@ -212,42 +226,37 @@ server.post("/publicacoes/:id/gostei", urlencodedParser, (request, response) => 
     return response.redirect(`/publicacoes?idUsuario=${idUsuario}`);
 });
 
-server.post('/salvarPublicacao', (req, res) =>{
-    const id = req.params
-    let idUsuario = req.body
+server.post("/publicacoes/:id/salvar", urlencodedParser, (req, res) => {
+    const { id } = req.params;
+    let { idUsuario } = req.body;
     idUsuario = Number(idUsuario)
+    let publicacoes = require("./mocks/publicacoes.json");
+    let usuarios = require("./mocks/usuarios.json");
+    const publicacao = publicacoes.find(publicacao => publicacao.id == id);
+    const usuarioLogado = usuarios.find(usuario => usuario.id == idUsuario);
 
-    const publicacoes = require("./mocks/publicacoes.json")
-
-    let pub = publicacoes.find(publicacao => publicacao.id == id)
-
-    getElementById("save").onclick = function save(){
-        pub.publicacaoSalva = true
-        salvarPublicacao(pub)
-        getElementById("save").innerHTML = "Desfazer"
+    if (usuarioLogado.idPublicacoesSalvas.includes(publicacao.id)) {
+        let publicacao = publicacoes.find(publicacao => publicacao.id == id)
+        usuarioLogado.idPublicacoesSalvas.filter(idPublicacoesSalvas => idPublicacoesSalvas = publicacao.id)
+    } else {
+        usuarioLogado.idPublicacoesSalvas.push(publicacao.id)
     }
-    return res.redirect(`/publicacoes?idUsuario=${idUsuario}`)
 
-})
-
-server.post('/desalvarPublicacao', (req, res) => {
-    const id = req.params
-    let idUsuario = req.body
-
-    const publicacoesSalvas = require("./mocks/publicacoesSalvas.json")
-    let publicacao = publicacoesSalvas.find(publicacao => publicacao.id == id)
-    
-    if (publicacao.publicacaoSalva == true){
-        getElementById("save").onclick = function desalvar(){
-            publicacao.publicacaoSalva == false
-            desalvarPublicacao(publicacao)
-            
+    const usuariosAtualizados = usuarios.map(user => {
+        if (user.id == usuarioLogado.id) {
+            return usuarioLogado;
+        } else {
+            return user;
         }
-    }
+    })
+
+    fs.writeFileSync("./mocks/usuarios.json", JSON.stringify(usuariosAtualizados, null, 2));
 
     return res.redirect(`/publicacoes?idUsuario=${idUsuario}`)
+
 })
-//
+
+
 
 
 
