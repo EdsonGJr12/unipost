@@ -271,6 +271,32 @@ server.post("/publicacoes/:id/salvar", urlencodedParser, (req, res) => {
     return res.redirect(`/publicacoes?idUsuario=${idUsuario}`)
 })
 
+server.get("/publicacoes-salvas", (request, response) => {
+    const { idUsuario } = request.query;
+
+    let publicacoes = require("./mocks/publicacoes.json");
+    let usuarios = require("./mocks/usuarios.json");
+
+    let usuarioLogado = usuarios.find(usuario => usuario.id == idUsuario);
+
+    console.log(usuarioLogado)
+
+    const html = usuarioLogado.idPublicacoesSalvas.map(idPublicacao => {
+        const publicacao = publicacoes.find(publicacao => publicacao.id == idPublicacao);
+
+        return `
+            <div style="border-bottom: 1px solid black">
+                <p>${publicacao.texto}</p>
+            </div>
+        `
+    }).join("");
+
+    return response.send(html);
+});
+
+
+
+
 server.get("/usuario-nome", (request, response) => {
     const { idUsuario } = request.query;
 
