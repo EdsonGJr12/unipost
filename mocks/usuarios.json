@@ -7,7 +7,11 @@
     "inscritos": [
       2
     ],
-    "logado": true
+    "logado": true,
+    "idPublicacoesSalvas": [
+      8,
+      2
+    ]
   },
   {
     "id": 2,
@@ -17,7 +21,8 @@
     "inscritos": [
       1
     ],
-    "logado": false
+    "logado": false,
+    "idPublicacoesSalvas": []
   },
   {
     "id": 3,
@@ -29,7 +34,8 @@
       3,
       4
     ],
-    "logado": false
+    "logado": false,
+    "idPublicacoesSalvas": []
   },
   {
     "id": 4,
@@ -37,6 +43,7 @@
     "login": "beltrano",
     "senha": "123456",
     "inscritos": [],
-    "logado": false
+    "logado": false,
+    "idPublicacoesSalvas": []
   }
 ]

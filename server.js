@@ -233,13 +233,13 @@ server.post("/publicacoes/:id/salvar", urlencodedParser, (req, res) => {
     let publicacoes = require("./mocks/publicacoes.json");
     let usuarios = require("./mocks/usuarios.json");
     const publicacao = publicacoes.find(publicacao => publicacao.id == id);
-    const usuarioLogado = usuarios.find(usuario => usuario.id == idUsuario);
+    let usuarioLogado = usuarios.find(usuario => usuario.id == idUsuario);
 
-    if (usuarioLogado.idPublicacoesSalvas.includes(publicacao.id)) {
-        let publicacao = publicacoes.find(publicacao => publicacao.id == id)
-        usuarioLogado.idPublicacoesSalvas.filter(idPublicacoesSalvas => idPublicacoesSalvas = publicacao.id)
+    if (usuarioLogado.idPublicacoesSalvas.includes(Number(publicacao.id))) {
+        const idPublicacoesSalvasAtualizado = usuarioLogado.idPublicacoesSalvas.filter(idPublicacoesSalvas => idPublicacoesSalvas != id)
+        usuarioLogado.idPublicacoesSalvas = idPublicacoesSalvasAtualizado;
     } else {
-        usuarioLogado.idPublicacoesSalvas.push(publicacao.id)
+        usuarioLogado.idPublicacoesSalvas.push(Number(id))
     }
 
     const usuariosAtualizados = usuarios.map(user => {
@@ -248,12 +248,12 @@ server.post("/publicacoes/:id/salvar", urlencodedParser, (req, res) => {
         } else {
             return user;
         }
-    })
+    });
+
 
     fs.writeFileSync("./mocks/usuarios.json", JSON.stringify(usuariosAtualizados, null, 2));
 
     return res.redirect(`/publicacoes?idUsuario=${idUsuario}`)
-
 })
 
 
