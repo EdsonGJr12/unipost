@@ -46,5 +46,23 @@
     "inscritos": [],
     "logado": false,
     "idPublicacoesSalvas": []
+  },
+  {
+    "id": 5,
+    "nome": "aa",
+    "login": "a",
+    "senha": "a",
+    "inscritos": [],
+    "logado": true,
+    "idPublicacoesSalvas": []
+  },
+  {
+    "id": 6,
+    "nome": "aaa",
+    "login": "a",
+    "senha": "a",
+    "inscritos": [],
+    "logado": true,
+    "idPublicacoesSalvas": []
   }
 ]

@@ -1,7 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 
-const { autenticar, salvarNovaPublicacao, gerarIdPublicacao, salvarPublicacao, desalvarPublicacao } = require('./service');
+const { autenticar, salvarNovaPublicacao, gerarIdPublicacao} = require('./service');
 
 const server = express();
 var urlencodedParser = bodyParser.urlencoded({ extended: false })
@@ -32,6 +32,10 @@ server.get("/login", (request, response) => {
             </form>
         </body>
         </html>
+
+        <form style="margin-top:15px" method="get" action="/cadastrar">
+        <button>Cadastrar</button>
+        </form>
     `);
 });
 
@@ -295,8 +299,6 @@ server.get("/publicacoes-salvas", (request, response) => {
 });
 
 
-
-
 server.get("/usuario-nome", (request, response) => {
     const { idUsuario } = request.query;
 
@@ -336,6 +338,48 @@ server.post("/usuario-nome", urlencodedParser, (request, response) => {
 
     return response.redirect(`/publicacoes?idUsuario=${idUsuario}`);
 });
+
+server.get("/cadastrar", (req, res) => {
+    const html = `
+    <form method="post" action="/cadastrar">
+    <h2>Cadastrar usuario</h2>
+    <input style="margin-top: 5px" name="nome" type="text" placeholder="Nome de usuario"/>
+    <br>
+    <input style="margin-top: 5px" name="login" type="text" placeholder="Login"/>
+    <br>
+    <input style="margin-top: 5px" name="senha" type="text" placeholder="Senha"/>
+    <br>
+    <button style="margin-top: 5px" type="submit">Cadastrar</button>
+    </form>
+`
+    return res.send(html)
+})
+
+server.post("/cadastrar", urlencodedParser, (req, res) => {
+    let usuarios = require("./mocks/usuarios.json");
+    const id = usuarios.length+1
+    const { nome,
+    login,
+    senha }
+     = req.body
+
+    const novoUsuario = {
+        id: id,
+        nome: String(nome),
+        login: String(login),
+        senha: senha,
+        inscritos: [],
+        logado: false,
+        idPublicacoesSalvas: []
+    }
+
+    usuarios.push(novoUsuario)
+
+    fs.writeFileSync("./mocks/usuarios.json", JSON.stringify(usuarios, null, 2));
+    
+    return res.redirect("/login")
+
+})  
 
 
 
